@@ -22,7 +22,16 @@ func main() {
 		_, _ = os.Stderr.WriteString(err.Error())
 		os.Exit(1)
 	}
+	println()
 	for _, issue := range issues {
-		fmt.Printf("%+v\n", issue)
+		fmt.Printf("%s: %s: %s\n", issue.Id, fmtStatus(issue.Status), issue.Summary)
+	}
+}
+
+func fmtStatus(status string) string {
+	if status == "PROD READY" {
+		return "\033[32m" + status + "\033[0m"
+	} else {
+		return "\033[31m" + status + "\033[0m"
 	}
 }
