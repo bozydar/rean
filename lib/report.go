@@ -1,9 +1,7 @@
 package lib
 
 import (
-	"fmt"
 	"github.com/briandowns/spinner"
-	"os"
 	"regexp"
 	"time"
 )
@@ -25,14 +23,9 @@ func BuildReport(repo *Repo, from string, to string) ([]Issue, error) {
 	}
 	s.Stop()
 	var result []Issue
-	for issueId, requestChannel := range channelById {
+	for _, requestChannel := range channelById {
 		issue, _ := <-requestChannel
-
-		if issue.err != nil {
-			_, _ = fmt.Fprintf(os.Stderr, "Can't find %s issue. Reason: %s", issueId, issue.err.Error())
-			continue
-		}
-		result = append(result, Issue(issue))
+		result = append(result, issue)
 	}
 
 	return result, nil

@@ -9,7 +9,7 @@ type Issue struct {
 	Id      string
 	Summary string
 	Status  string
-	err     error
+	Err     error
 }
 
 func GetIssueByIdChannel(id string) (ch chan Issue) {
@@ -29,13 +29,14 @@ func GetIssueById(id string) Issue {
 	issue, _, err := jiraClient.Issue.Get(id, nil)
 	if err != nil {
 		return Issue{
-			err: err,
+			Id:  id,
+			Err: err,
 		}
 	}
 	return Issue{
 		Id:      id,
 		Summary: issue.Fields.Summary,
 		Status:  issue.Fields.Status.Name,
-		err:     nil,
+		Err:     nil,
 	}
 }
