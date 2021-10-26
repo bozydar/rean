@@ -13,30 +13,28 @@ func BuildReport(repo *Repo, from string, to string) ([]Issue, error) {
 	if err != nil {
 		return nil, err
 	}
-	occur := map[string]*Issue{}
+	channelById := map[string]chan Issue{}
 	s := spinner.New(spinner.CharSets[1], 100*time.Millisecond)
 	s.Start()
 	for _, commit := range commits {
 		for _, issueId := range extractIssueIds(commit.Subject) {
-			if occur[issueId] == nil {
-				issue, err := GetIssueById("BT-" + issueId)
-				if err != nil {
-					_, err := fmt.Fprintf(os.Stderr, "Can't find %s issue. Reason: %s", issueId, err.Error())
-					if err != nil {
-						return nil, err
-					}
-					continue
-				}
-				occur[issueId] = issue
+			if channelById[issueId] == nil {
+				channelById[issueId] = GetIssueByIdChannel("BT-" + issueId)
 			}
 		}
 	}
 	s.Stop()
-
 	var result []Issue
-	for _, issue := range occur {
-		result = append(result, *issue)
+	for issueId, requestChannel := range channelById {
+		issue, _ := <-requestChannel
+
+		if issue.err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "Can't find %s issue. Reason: %s", issueId, issue.err.Error())
+			continue
+		}
+		result = append(result, Issue(issue))
 	}
+
 	return result, nil
 }
 

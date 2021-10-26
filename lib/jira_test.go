@@ -10,8 +10,8 @@ func Test_GetIssueById(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
-	issue, err := GetIssueById("BT-7021")
-	if err != nil {
+	issue := GetIssueById("BT-7021")
+	if issue.err != nil {
 		t.Fail()
 	}
 	println(issue.Status)
