@@ -12,5 +12,8 @@ run:
 	go build -o ${BINARY_NAME} .
 	./${BINARY_NAME}
 
+install:
+	cp ./rean /usr/local/bin/
+
 clean:
 	go clean
