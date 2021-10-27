@@ -1,31 +1,56 @@
 package lib
 
 import (
-	"github.com/briandowns/spinner"
 	"regexp"
-	"time"
 )
 
-func BuildReport(repo *Repo, from string, to string) ([]Issue, error) {
-	commits, err := repo.Diff(from, to)
+type ReportItem struct {
+	Issue   Issue
+	Commits []Commit
+}
+
+type commitAndCh struct {
+	ch      chan Issue
+	commits []Commit
+}
+
+type ReportConfig struct {
+	JiraConfig *JiraConfig
+	Repo       *Repo
+	From       string
+	To         string
+}
+
+func (reportItem ReportItem) Error() error {
+	return reportItem.Issue.Err
+}
+
+func (reportConfig ReportConfig) BuildReport() ([]ReportItem, error) {
+	commits, err := reportConfig.Repo.Diff(reportConfig.From, reportConfig.To)
 	if err != nil {
 		return nil, err
 	}
-	channelById := map[string]chan Issue{}
-	s := spinner.New(spinner.CharSets[1], 100*time.Millisecond)
-	s.Start()
+	channelById := map[string]*commitAndCh{}
 	for _, commit := range commits {
 		for _, issueId := range extractIssueIds(commit.Subject) {
 			if channelById[issueId] == nil {
-				channelById[issueId] = GetIssueByIdChannel("BT-" + issueId)
+				channelById[issueId] = &commitAndCh{
+					ch:      reportConfig.JiraConfig.GetIssueByIdChannel(issueId),
+					commits: []Commit{commit},
+				}
+			} else {
+				channelById[issueId].commits = append(channelById[issueId].commits, commit)
 			}
 		}
 	}
-	s.Stop()
-	var result []Issue
-	for _, requestChannel := range channelById {
-		issue, _ := <-requestChannel
-		result = append(result, issue)
+	var result []ReportItem
+	for _, commitAndCh := range channelById {
+		issue, _ := <-commitAndCh.ch
+		reportItem := ReportItem{
+			Issue:   issue,
+			Commits: commitAndCh.commits,
+		}
+		result = append(result, reportItem)
 	}
 
 	return result, nil
