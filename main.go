@@ -16,7 +16,7 @@ func main() {
 		JiraPassword      string `arg:"--jira-password,env:JIRA_PASSWORD"`
 		JiraUrl           string `arg:"--jira-url,env:JIRA_URL"`
 		JiraProjectPrefix string `arg:"--jira-project-prefix,env:JIRA_PROJECT_PREFIX"`
-		Dir               string `arg:"positional" placeholder:"WOR_DIR" help:"Where the analysed directory is" default:"."`
+		Dir               string `arg:"positional" placeholder:"WORK_DIR" help:"Where the analysed directory is" default:"."`
 		From              string `arg:"--from" help:"Starting sha"`
 		To                string `arg:"--to" help:"Ending sha"`
 		ShowCommits       bool   `arg:"-c,--show-commits" help:"Show all the commits for each reportItem number"`
