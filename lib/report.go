@@ -21,11 +21,11 @@ type ReportConfig struct {
 	To         string
 }
 
-func (reportItem ReportItem) Error() error {
+func (reportItem *ReportItem) Error() error {
 	return reportItem.Issue.Err
 }
 
-func (reportConfig ReportConfig) BuildReport() ([]ReportItem, error) {
+func (reportConfig *ReportConfig) BuildReport() ([]ReportItem, error) {
 	commits, err := reportConfig.Repo.Diff(reportConfig.From, reportConfig.To)
 	if err != nil {
 		return nil, err

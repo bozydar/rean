@@ -16,7 +16,7 @@ type Commit struct {
 	Subject string
 }
 
-func (repo Repo) Diff(from string, to string) ([]Commit, error) {
+func (repo *Repo) Diff(from string, to string) ([]Commit, error) {
 	cmd := exec.Command("git", "log", fmt.Sprintf("%s..%s", from, to), "--pretty=format:%h|%s")
 	cmd.Dir = repo.Dir
 
