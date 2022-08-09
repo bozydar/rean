@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -42,18 +43,19 @@ func (repo *Repo) Diff(from string, to string) ([]Commit, error) {
 	return parseLog(stdBuffer.String()), nil
 }
 
+var shaRegexp = regexp.MustCompile(`^([0-9a-f]{9})\|(.*)$`)
+
 func parseLog(log string) (result []Commit) {
 	lines := strings.Split(log, "\n")
 	result = []Commit{}
 	for _, line := range lines {
-		shaAndSubject := strings.Split(line, "|")
-		if len(shaAndSubject) < 2 {
-			continue
+		groups := shaRegexp.FindAllStringSubmatch(line, -1)
+		for _, group := range groups {
+			result = append(result, Commit{
+				Sha:     group[1],
+				Subject: group[2],
+			})
 		}
-		result = append(result, Commit{
-			Sha:     shaAndSubject[0],
-			Subject: shaAndSubject[1],
-		})
 	}
 	return result
 }

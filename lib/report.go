@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"regexp"
 )
 
@@ -32,7 +33,7 @@ func (reportConfig *ReportConfig) BuildReport() ([]ReportItem, error) {
 	}
 	channelById := map[string]*commitAndCh{}
 	for _, commit := range commits {
-		for _, issueId := range extractIssueIds(commit.Subject) {
+		for _, issueId := range extractIssueIds(commit.Subject, reportConfig.JiraConfig.ProjectPrefix) {
 			if channelById[issueId] == nil {
 				channelById[issueId] = &commitAndCh{
 					ch:      reportConfig.JiraConfig.GetIssueByIdChannel(issueId),
@@ -56,9 +57,10 @@ func (reportConfig *ReportConfig) BuildReport() ([]ReportItem, error) {
 	return result, nil
 }
 
-var issueIdRe = regexp.MustCompile(`\[(\d+?)]`)
+func extractIssueIds(subject string, projectPrefix string) []string {
+	re := fmt.Sprintf(`\[(%s-)?(\d+?)]`, projectPrefix)
+	var issueIdRe = regexp.MustCompile(re)
 
-func extractIssueIds(subject string) []string {
 	found := issueIdRe.FindAllString(subject, -1)
 	if found == nil {
 		return []string{}

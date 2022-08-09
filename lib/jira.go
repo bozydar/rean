@@ -2,6 +2,7 @@ package lib
 
 import (
 	"github.com/andygrunwald/go-jira"
+	"strings"
 )
 
 type Issue struct {
@@ -52,5 +53,9 @@ func (jiraConfig *JiraConfig) buildJiraClient() (*jira.Client, error) {
 }
 
 func (jiraConfig *JiraConfig) buildIdFromNumber(number string) string {
-	return jiraConfig.ProjectPrefix + "-" + number
+	if strings.Contains(number, "-") {
+		return number
+	} else {
+		return jiraConfig.ProjectPrefix + "-" + number
+	}
 }

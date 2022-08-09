@@ -52,8 +52,10 @@ func ShowMain(args *ShowArgs) {
 
 func fmtStatus(status string) string {
 	status = strings.ToUpper(status)
-	if status == "PROD READY" || status == "RELEASED" {
+	if status == "RELEASED" {
 		return "\033[32m" + status + "\033[0m"
+	} else if status == "PROD READY" || status == "DONE" {
+		return "\033[34m" + status + "\033[0m"
 	} else {
 		return "\033[31m" + status + "\033[0m"
 	}
