@@ -2,7 +2,6 @@ package lib
 
 import (
 	"github.com/andygrunwald/go-jira"
-	"strings"
 )
 
 type Issue struct {
@@ -29,7 +28,7 @@ func (jiraConfig *JiraConfig) GetIssueByIdChannel(id string) (ch chan Issue) {
 
 func (jiraConfig *JiraConfig) GetIssueById(id string) Issue {
 	jiraClient, _ := jiraConfig.buildJiraClient()
-	issue, _, err := jiraClient.Issue.Get(jiraConfig.buildIdFromNumber(id), nil)
+	issue, _, err := jiraClient.Issue.Get(id, nil)
 	if err != nil {
 		return Issue{
 			Id:  id,
@@ -50,12 +49,4 @@ func (jiraConfig *JiraConfig) buildJiraClient() (*jira.Client, error) {
 		Password: jiraConfig.Password,
 	}
 	return jira.NewClient(tp.Client(), jiraConfig.Url)
-}
-
-func (jiraConfig *JiraConfig) buildIdFromNumber(number string) string {
-	if strings.Contains(number, "-") {
-		return number
-	} else {
-		return jiraConfig.ProjectPrefix + "-" + number
-	}
 }

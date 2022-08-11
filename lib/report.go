@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 type ReportItem struct {
@@ -67,7 +68,16 @@ func extractIssueIds(subject string, projectPrefix string) []string {
 	}
 	var result []string
 	for _, value := range found {
-		result = append(result, value[1:len(value)-1])
+		id := buildIdFromNumber(value[1:len(value)-1], projectPrefix)
+		result = append(result, id)
 	}
 	return result
+}
+
+func buildIdFromNumber(number string, projectPrefix string) string {
+	if strings.Contains(number, "-") {
+		return number
+	} else {
+		return projectPrefix + "-" + number
+	}
 }
