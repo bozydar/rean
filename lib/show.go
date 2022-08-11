@@ -7,9 +7,10 @@ import (
 )
 
 type ShowArgs struct {
-	From        string `arg:"-f,required" help:"Starting sha"`
-	To          string `arg:"-t,required" help:"Ending sha"`
-	ShowCommits bool   `arg:"-c,--show-commits" help:"Show all the commits for each reportItem number"`
+	From         string `arg:"-f,required" help:"Starting sha"`
+	To           string `arg:"-t,required" help:"Ending sha"`
+	ShowCommits  bool   `arg:"-c,--show-commits" help:"Show all the commits for each reportItem number"`
+	ShowAssignee bool   `arg:"-a,--show-assignee" help:"Show assignee for a ticket"`
 }
 
 func ShowMain(args *ShowArgs) {
@@ -40,7 +41,11 @@ func ShowMain(args *ShowArgs) {
 		if reportItem.Error() != nil {
 			fmt.Printf("%s: ERROR: %s\n", reportItem.Issue.Id, reportItem.Error())
 		} else {
-			fmt.Printf("%s: %s: %s\n", reportItem.Issue.Id, fmtStatus(reportItem.Issue.Status), reportItem.Issue.Summary)
+			if args.ShowAssignee {
+				fmt.Printf("%s: %s: %s: %s\n", reportItem.Issue.Id, reportItem.Issue.Assignee, fmtStatus(reportItem.Issue.Status), reportItem.Issue.Summary)
+			} else {
+				fmt.Printf("%s: %s: %s\n", reportItem.Issue.Id, fmtStatus(reportItem.Issue.Status), reportItem.Issue.Summary)
+			}
 			if args.ShowCommits {
 				for _, commit := range reportItem.Commits {
 					fmt.Printf("\t%s\n", commit.Subject)

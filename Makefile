@@ -12,7 +12,7 @@ run:
 	go build -o ${BINARY_NAME} .
 	./${BINARY_NAME}
 
-install:
+install: all
 	cp ./rean /usr/local/bin/
 
 clean:

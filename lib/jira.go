@@ -5,10 +5,11 @@ import (
 )
 
 type Issue struct {
-	Id      string
-	Summary string
-	Status  string
-	Err     error
+	Id       string
+	Summary  string
+	Status   string
+	Assignee string
+	Err      error
 }
 
 type JiraConfig struct {
@@ -35,11 +36,19 @@ func (jiraConfig *JiraConfig) GetIssueById(id string) Issue {
 			Err: err,
 		}
 	}
+
+	// Actually can't get assignee
+	assignee := ""
+	if issue.Fields.Assignee != nil {
+		assignee = issue.Fields.Assignee.Name
+	}
+
 	return Issue{
-		Id:      id,
-		Summary: issue.Fields.Summary,
-		Status:  issue.Fields.Status.Name,
-		Err:     nil,
+		Id:       id,
+		Summary:  issue.Fields.Summary,
+		Status:   issue.Fields.Status.Name,
+		Assignee: assignee,
+		Err:      nil,
 	}
 }
 
