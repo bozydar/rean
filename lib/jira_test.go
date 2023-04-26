@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 )
 
@@ -439,10 +438,10 @@ func Test_GetIssueById(t *testing.T) {
 	defer ts.Close()
 
 	jiraConfig := JiraConfig{
-		Username:      os.Getenv("JIRA_USERNAME"),
-		Password:      os.Getenv("JIRA_PASSWORD"),
+		Username:      "bozydar@1centre.com",
+		Password:      "abc",
 		Url:           ts.URL,
-		ProjectPrefix: os.Getenv("JIRA_PROJECT_PREFIX"),
+		ProjectPrefix: "BT",
 	}
 
 	issue := jiraConfig.GetIssueById("BT-7021")
