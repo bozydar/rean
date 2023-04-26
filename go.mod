@@ -1,6 +1,6 @@
 module rean
 
-go 1.15
+go 1.20
 
 require (
 	github.com/BurntSushi/toml v1.2.1
