@@ -27,13 +27,14 @@ func ShowMain(args *ShowArgs) {
 			Url:           config.Jira.Url,
 			ProjectPrefix: config.Jira.ProjectPrefix,
 		},
-		Repo: &Repo{Dir: "/Users/bozydar/Workspaces/1centre/1centre-api/"},
+		Repo: &Repo{Dir: "./"},
 		From: args.From,
 		To:   args.To,
 	}
 
 	reportItems, err := reportConfig.BuildReport()
 	if err != nil {
+		_, _ = os.Stderr.WriteString(err.Error())
 		os.Exit(1)
 	}
 

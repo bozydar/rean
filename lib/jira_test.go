@@ -8,7 +8,7 @@ import (
 
 func Test_GetIssueById(t *testing.T) {
 	// Need to set up jira mock
-	return
+	//return
 
 	err := godotenv.Load("../.env")
 	if err != nil {
@@ -20,7 +20,7 @@ func Test_GetIssueById(t *testing.T) {
 		Url:           os.Getenv("JIRA_URL"),
 		ProjectPrefix: os.Getenv("JIRA_PROJECT_PREFIX"),
 	}
-	issue := jiraConfig.GetIssueById("7021")
+	issue := jiraConfig.GetIssueById("BT-7021")
 	if issue.Err != nil {
 		t.Fail()
 	}
